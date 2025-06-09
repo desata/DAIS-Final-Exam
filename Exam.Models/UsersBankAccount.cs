@@ -1,8 +1,8 @@
 ﻿namespace Exam.Models
 {
-    public class BankAccountsUser
+    public class UsersBankAccount
     {
-        public int BankAccountId { get; set; }
         public int UserId { get; set; }
+        public int BankAccountId { get; set; }
     }
 }
