@@ -1,8 +1,12 @@
 using Exam.Repository;
 using Exam.Repository.Implementation.BankAccount;
+using Exam.Repository.Implementation.Payment;
+using Exam.Repository.Implementation.Status;
 using Exam.Repository.Implementation.User;
 using Exam.Repository.Implementation.UsersBankAccount;
 using Exam.Repository.Interfaces.BankAccount;
+using Exam.Repository.Interfaces.Payment;
+using Exam.Repository.Interfaces.Status;
 using Exam.Repository.Interfaces.User;
 using Exam.Repository.Interfaces.UsersBankAccount;
 using Exam.Services.Implementation.Authentication;
@@ -24,15 +28,17 @@ namespace Exam.Web
             builder.Services.AddControllersWithViews();
 
             // Register services
-            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IBankAccountService, BankAccountService>();
-            //builder.Services.AddScoped<IUsersBankAccountService, UsersBankAccountService>();
+            builder.Services.AddScoped<IUserService, UserService>();
 
             // Register repositories
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IStatusRepository, StatusRepository>();
             builder.Services.AddScoped<IUsersBankAccountRepository, UsersBankAccountRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 
 
             // Initialize connection factory
