@@ -1,4 +1,4 @@
-﻿namespace Exam.Services.DTOs.Payments
+﻿namespace Exam.Services.DTOs.Payment
 {
     public class UpdatePaymentRequest
     {
