@@ -2,7 +2,7 @@
 
 namespace Exam.Services.DTOs.Payment
 {
-    public  class PaymentsInfo
+    public  class PaymentInfo
     {
         public int PaymentId { get; set; }
 
@@ -20,6 +20,6 @@ namespace Exam.Services.DTOs.Payment
         public decimal Amount { get; set; }
 
         public int StatusId { get; set; }
-        public string StatusName { get; set; }
+        public string StatusDescription { get; set; }
     }
 }

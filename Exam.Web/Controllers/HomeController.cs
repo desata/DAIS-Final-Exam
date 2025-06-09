@@ -11,9 +11,9 @@ namespace Exam.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IUserService _userService;
         private readonly IBankAccountService _bankAccountService;
 
-        private readonly IUserService _userService;
 
         public HomeController(ILogger<HomeController> logger, IUserService userService, IBankAccountService bankAccountService)
         {

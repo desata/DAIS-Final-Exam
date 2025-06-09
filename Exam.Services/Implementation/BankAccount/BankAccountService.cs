@@ -3,13 +3,7 @@ using Exam.Repository.Interfaces.User;
 using Exam.Repository.Interfaces.UsersBankAccount;
 using Exam.Services.DTOs.BankAccount;
 using Exam.Services.Interfaces.BankAccount;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data.SqlTypes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Exam.Services.Implementation.BankAccount
 {
@@ -79,6 +73,7 @@ namespace Exam.Services.Implementation.BankAccount
                 return new UpdateBalanceResponse
                 {
                     Success = success,
+                    Message = "Balance updated successfully."
                 };
             }
             catch (Exception ex)
@@ -86,7 +81,7 @@ namespace Exam.Services.Implementation.BankAccount
                 return new UpdateBalanceResponse
                 {
                     Success = false,
-                    ErrorMessage = ex.Message
+                    Message = ex.Message
                 };
             }
         }

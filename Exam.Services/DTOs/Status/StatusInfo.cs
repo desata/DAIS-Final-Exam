@@ -2,7 +2,7 @@
 {
     public class StatusInfo
     {
-        public int Id { get; set; }
+        public int StatusId { get; set; }
         public string Description { get; set; }
     }
 }

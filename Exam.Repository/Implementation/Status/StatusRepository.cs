@@ -1,4 +1,5 @@
 ﻿using Exam.Repository.Base;
+using Exam.Repository.Helpers;
 using Exam.Repository.Interfaces.Status;
 using Microsoft.Data.SqlClient;
 
@@ -42,7 +43,9 @@ namespace Exam.Repository.Implementation.Status
 
         public IAsyncEnumerable<Models.Status> RetrieveCollectionAsync(StatusFilter filter)
         {
-            throw new NotImplementedException();
+            Filter commandFilter = new Filter();
+
+            return RetrieveCollectionAsync(commandFilter);
         }
 
         public Task<bool> UpdateAsync(int objectId, StatusUpdate update)
