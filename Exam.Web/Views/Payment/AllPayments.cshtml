@@ -5,7 +5,7 @@
     ViewData["Title"] = "Списък с плащания";
 }
 
-<div class="container mt-5">
+<div class="container mt-6">
     <h2 class="mb-4">Моите плащания</h2>
 
     @if (!Model.Any())
@@ -32,6 +32,7 @@
                     <th>Основание</th>
                     <th>Сума</th>
                     <th>Статус</th>
+                    <th>Действие</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,7 +45,30 @@
                         <td>@movement.RecieverIBAN</td>
                         <td>@movement.Reference</td>
                         <td>@movement.Amount.ToString("F2")</td>
-                        <td>@movement.StatusDescription</td>                         
+                        <td>@movement.StatusDescription</td>
+                        <td>
+                            @if (movement.StatusId == 1)
+                            {
+                                <form asp-action="SendPayments" method="post" class="d-inline me-1">
+                                    <input type="hidden" name="PaymentId" value="@movement.PaymentId" />
+                                    <input type="hidden" name="ActionType" value="Send" />
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        Изпрати
+                                    </button>
+                                </form>
+                                <form asp-action="CancelPayments" method="post" class="d-inline">
+                                    <input type="hidden" name="PaymentId" value="@movement.PaymentId" />
+                                    <input type="hidden" name="ActionType" value="Cancel" />
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        Откажи
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>

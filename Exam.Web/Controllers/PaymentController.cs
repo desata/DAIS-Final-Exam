@@ -1,4 +1,6 @@
-﻿using Exam.Services.Interfaces.BankAccount;
+﻿using Exam.Models;
+using Exam.Services.DTOs.Payment;
+using Exam.Services.Interfaces.BankAccount;
 using Exam.Services.Interfaces.Payment;
 using Exam.Services.Interfaces.Status;
 using Exam.Services.Interfaces.User;
@@ -14,12 +16,14 @@ namespace Exam.Web.Controllers
 
         private readonly IBankAccountService _bankAccountService;
         private readonly IPaymentService _paymentService;
+        private readonly IUserService _userService;
         private readonly IStatusService _statusService;
-        public PaymentController(IBankAccountService bankAccountService, IPaymentService paymentService, IStatusService statusService)
+        public PaymentController(IBankAccountService bankAccountService, IPaymentService paymentService, IStatusService statusService, IUserService userService)
         {
             _bankAccountService = bankAccountService;
             _paymentService = paymentService;
             _statusService = statusService;
+            _userService = userService;
         }
         public IActionResult Index()
         {
@@ -82,6 +86,121 @@ namespace Exam.Web.Controllers
 
             return View(viewModel);
 
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreatePayment()
+        {
+            int userId = HttpContext.Session.GetInt32("UserId").Value;
+
+            if (!HttpContext.Session.GetInt32("UserId").HasValue)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var userAccounts = await _bankAccountService.GetBankAccountsByUserIdAsync(userId);
+            var user = await _userService.GetByIdAsync(userId);
+            var model = new CreatePaymentViewModel
+            {
+                SenderUserId = userId,
+                SenderName = user.Name,
+                IBANOptions = userAccounts.Select(acc => new BankAccountOption
+                {
+                    BankAccountId = acc.BankAccountId,
+                    IBAN = acc.IBAN
+                }).ToList()
+            };
+
+            return View(model);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePayment(CreatePaymentViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var userAccounts = await _bankAccountService.GetBankAccountsByUserIdAsync(model.SenderUserId);
+                model.IBANOptions = userAccounts.Select(acc => new BankAccountOption
+                {
+                    BankAccountId = acc.BankAccountId,
+                    IBAN = acc.IBAN
+                }).ToList();
+
+                return View(model);
+            }
+
+
+            var userAccountsList = await _bankAccountService.GetBankAccountsByUserIdAsync(model.SenderUserId);
+            var selectedAccount = userAccountsList.FirstOrDefault(acc => acc.IBAN == model.SelectedIBAN);
+
+            if (selectedAccount == null)
+            {
+                ModelState.AddModelError("SelectedIBAN", "Invalid IBAN selected.");
+                model.IBANOptions = userAccountsList.Select(acc => new BankAccountOption
+                {
+                    BankAccountId = acc.BankAccountId,
+                    IBAN = acc.IBAN
+                }).ToList();
+
+                return View(model);
+            }
+
+            var request = new CreatePaymentRequest
+            {
+                SenderBankAccountId = selectedAccount.BankAccountId,
+                SenderUserId = model.SenderUserId,
+                SenderIBAN = model.SelectedIBAN,
+                RecieverIBAN = model.RecieverIBAN,
+                RecieverName = model.RecieverName,
+                Reference = model.Reference,
+                Amount = model.Amount,
+                StatusId = model.StatusId
+            };
+
+            var result = await _paymentService.CreatePaymentAsync(request);
+
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message;
+                return View(model);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SendPayments(SendPaymentViewModel model)
+        {
+
+            var payment = await _paymentService.GetPaymentByIdAsync(model.PaymentId);
+
+            var request = new UpdatePaymentRequest
+            {
+                PaymentId = payment.PaymentId,
+                StatusId = 2
+            };
+
+            await _paymentService.SendPaymentAsync(request);
+
+            return RedirectToAction("AllPayments");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CancelPayments(CancelPaymentViewModel model)
+        {
+
+            var payment = await _paymentService.GetPaymentByIdAsync(model.PaymentId);
+
+            var request = new UpdatePaymentRequest
+            {
+                PaymentId = payment.PaymentId,
+                StatusId = 3
+            };
+
+            await _paymentService.CancelPaymentAsync(request);
+
+            return RedirectToAction("AllPayments");
         }
     }
 }

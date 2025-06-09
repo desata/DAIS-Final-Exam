@@ -1,0 +1,62 @@
+﻿@using Exam.Web.Models.ViewModels
+@model CreatePaymentViewModel
+
+@{
+    ViewData["Title"] = "Създаване на плащане";
+}
+
+
+<div class="container mt-5">
+    <h2 class="mb-4">Create Payment</h2>
+
+    <form asp-action="CreatePayment" method="post">
+        <input type="hidden" asp-for="SenderUserId" />
+        <input type="hidden" asp-for="SenderBankAccountId" />
+        <input type="hidden" asp-for="StatusId" />
+
+        <div class="form-group">
+            <label asp-for="SelectedIBAN"></label>
+            <select asp-for="SelectedIBAN" class="form-control" asp-items="@(new SelectList(Model.IBANOptions, "IBAN", "IBAN"))">
+                <option value="">-- Select IBAN --</option>
+            </select>
+            <span asp-validation-for="SelectedIBAN" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="SenderName" class="form-label"></label>
+            <input asp-for="SenderName" class="form-control" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="RecieverIBAN" class="form-label"></label>
+            <input asp-for="RecieverIBAN" class="form-control" />
+            <span asp-validation-for="RecieverIBAN" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="RecieverName" class="form-label"></label>
+            <input asp-for="RecieverName" class="form-control" />
+            <span asp-validation-for="RecieverName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Reference" class="form-label"></label>
+            <input asp-for="Reference" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Amount" class="form-label"></label>
+            <input asp-for="Amount" class="form-control" />
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save Payment</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -42,7 +42,7 @@ namespace Exam.Repository.Implementation.Payment
 
         public Task<int> CreateAsync(Models.Payment entity)
         {
-            throw new NotImplementedException();
+            return base.CreateAsync(entity, IdDbFieldEnumeratorName);
         }
 
         public Task<Models.Payment> RetrieveAsync(int objectId)

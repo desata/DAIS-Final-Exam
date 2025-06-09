@@ -134,7 +134,6 @@ namespace Exam.Services.Implementation.Payment
                     NewBalance = senderBankAccount.Balance
                     
                 };
-                await _bankAccountService.UpdateBalanceAsync(update);
 
                 return new CreatePaymentResponse
                 {
