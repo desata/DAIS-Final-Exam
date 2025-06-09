@@ -50,7 +50,7 @@ namespace Exam.Repository.Implementation.BankAccount
             if (filter.IBAN is not null)
             {
                 commandFilter.AddClause("IBAN", filter.IBAN);
-            }
+            } 
 
             return RetrieveCollectionAsync(commandFilter);
         }

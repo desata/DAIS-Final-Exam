@@ -6,5 +6,7 @@ namespace Exam.Repository.Interfaces.BankAccount
     {
         public SqlString? IBAN { get; set; }
 
+        public SqlInt32? BankAccountId { get; set; }
+
     }
 }

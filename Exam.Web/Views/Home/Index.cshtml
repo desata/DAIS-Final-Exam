@@ -1,4 +1,43 @@
+@using Exam.Services.DTOs.BankAccount
+@model List<BankAccountInfo>
 @{
     ViewData["Title"] = "Home Page";
 }
-Welcome
+<div class="container mt-4">
+    <h2 class="mb-4">Моите банкови сметки</h2>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">Все още нямате банкови сментки</p>
+    }
+    else
+    {
+        <table class="table table-striped table-hover table-bordered align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th>IBAN</th>
+                    <th>Баланс</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var account in Model)
+                {
+                    <tr>
+                        <td>@account.IBAN</td>
+                        <td>@account.Balance</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="d-flex gap-3 mt-3">
+            <a href="@Url.Action("CreatePayment", "Payment")" class="btn btn-primary">
+                Създай плащане
+            </a>
+
+            <a href="@Url.Action("ViewMovements", "Payment")" class="btn btn-primary">
+                Всички движения
+            </a>
+        </div>
+    }
+</div>

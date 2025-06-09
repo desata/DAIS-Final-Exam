@@ -1,7 +1,7 @@
+using Exam.Services.Interfaces.BankAccount;
 using Exam.Services.Interfaces.User;
 using Exam.Web.Attributes;
 using Exam.Web.Models;
-using Exam.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -11,18 +11,19 @@ namespace Exam.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IBankAccountService _bankAccountService;
 
         private readonly IUserService _userService;
 
-        public HomeController(ILogger<HomeController> logger, IUserService userService)
+        public HomeController(ILogger<HomeController> logger, IUserService userService, IBankAccountService bankAccountService)
         {
             _logger = logger;
             _userService = userService;
+            _bankAccountService = bankAccountService;
         }
 
         public async Task<IActionResult> Index()
         {
-
             int userId = HttpContext.Session.GetInt32("UserId").Value;
 
             if (!HttpContext.Session.GetInt32("UserId").HasValue)
@@ -30,18 +31,7 @@ namespace Exam.Web.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            var response = await _userService.GetAllAsync();
-
-            var viewModel = new UserListViewModel
-            {
-                Users = response.Select(u => new UserViewModel
-                {
-                    UserId = u.UserId,
-                    Name = u.Name
-                }).ToList(),
-
-
-            };
+            var viewModel = await _bankAccountService.GetBankAccountsByUserIdAsync(userId);
 
             return View(viewModel);
         }
